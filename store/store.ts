@@ -4,6 +4,10 @@ import { createLogger } from "redux-logger";
 import { createEpicMiddleware } from "redux-observable";
 import { rootEpic } from "./epics";
 import * as types from "./actionTypes";
+import {
+  fetchListOfSubTopicsSuccessAction,
+  generateImageActionSuccess,
+} from "./actions";
 
 let store;
 
@@ -12,6 +16,8 @@ const INITIAL_STATE = {
   character: {},
   isFetchedOnServer: false,
   error: null,
+  listOfSubTopics: [],
+  urlForImage: "",
 };
 
 function reducer(state = INITIAL_STATE, { type, payload }) {
@@ -23,6 +29,20 @@ function reducer(state = INITIAL_STATE, { type, payload }) {
         isFetchedOnServer: payload.isServer,
         nextUserId: state.nextUserId + 1,
       };
+
+    // temporary place for state
+    case fetchListOfSubTopicsSuccessAction.type:
+      return {
+        ...state,
+        listOfSubTopics: payload,
+      };
+
+    case generateImageActionSuccess.type:
+      return {
+        ...state,
+        urlForImage: payload,
+      };
+
     case types.FETCH_USER_FAILURE:
       return {
         ...state,

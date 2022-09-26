@@ -11,6 +11,7 @@ import MenuIcon from "@mui/icons-material/Menu";
 import MailIcon from "@mui/icons-material/Mail";
 import NotificationsIcon from "@mui/icons-material/Notifications";
 import MoreIcon from "@mui/icons-material/MoreVert";
+import { Face6Outlined as FaceIcon } from "@mui/icons-material";
 import { useState } from "react";
 
 export const HeaderComponent = () => {
@@ -105,7 +106,7 @@ export const HeaderComponent = () => {
           aria-haspopup="true"
           color="inherit"
         >
-          <NotificationsIcon />
+          <FaceIcon />
         </IconButton>
         <p>Profile</p>
       </MenuItem>
@@ -162,7 +163,7 @@ export const HeaderComponent = () => {
               onClick={handleProfileMenuOpen}
               color="inherit"
             >
-              <NotificationsIcon />
+              <FaceIcon />
             </IconButton>
           </Box>
           <Box sx={{ display: { xs: "flex", md: "none" } }}>

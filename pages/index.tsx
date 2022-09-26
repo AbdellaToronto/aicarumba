@@ -1,23 +1,25 @@
-import { useEffect } from "react";
-import { useDispatch } from "react-redux";
-import Link from "next/link";
-import UserInfo from "../components/UserInfo";
-import { stopFetchingUsers, startFetchingUsers } from "../store/actions";
+import { useDispatch, useSelector } from "react-redux";
+import { fetchListOfSubTopicsAction } from "../store/actions";
 import { HeaderComponent } from "../components/header.component";
 import { css, Global } from "@emotion/react";
+import { TextPromptCard } from "../components/textPromptCard.component";
+import { Box, Container } from "@mui/material";
+import styled from "@emotion/styled";
+
+const StyledContainer = styled(Container)`
+  margin-top: 20px;
+`;
 
 const AICarumba = () => {
   const dispatch = useDispatch();
 
-  useEffect(() => {
-    dispatch(startFetchingUsers());
-    return () => {
-      dispatch(stopFetchingUsers());
-    };
-  }, [dispatch]);
+  // get rid of any eventually, lazy ow
+  const { subtopics } = useSelector((state: any) => ({
+    subtopics: state.listOfSubTopics || [],
+  }));
 
   return (
-    <>
+    <Box>
       <Global
         styles={css`
           body {
@@ -26,14 +28,16 @@ const AICarumba = () => {
         `}
       />
       <HeaderComponent />
-      <UserInfo />
-      <br />
-      <nav>
-        <Link href="/other">
-          <a>Navigate to "/other"</a>
-        </Link>
-      </nav>
-    </>
+      <StyledContainer maxWidth="lg">
+        <TextPromptCard
+          bottomBarIsOpen={subtopics.length > 0}
+          subTopics={subtopics}
+          handleSearchClick={(text) =>
+            dispatch(fetchListOfSubTopicsAction(text))
+          }
+        />
+      </StyledContainer>
+    </Box>
   );
 };
 export default AICarumba;
