@@ -9,9 +9,7 @@ import {
 import { Action } from "redux";
 
 const configuration = new Configuration({
-  apiKey:
-    process.env.OPENAI_API_KEY ||
-    "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",
+  apiKey: process.env.OPENAI_API_KEY,
 });
 
 const openai = new OpenAIApi(configuration);
