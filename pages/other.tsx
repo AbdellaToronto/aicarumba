@@ -1,4 +1,4 @@
-import Link from 'next/link'
+import Link from "next/link";
 
 const OtherPage = () => (
   <div>
@@ -7,6 +7,6 @@ const OtherPage = () => (
       <a>Get back to "/"</a>
     </Link>
   </div>
-)
+);
 
-export default OtherPage
+export default OtherPage;

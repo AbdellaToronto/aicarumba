@@ -1,16 +1,16 @@
-import { useSelector } from 'react-redux'
+import { useSelector } from "react-redux";
 
 const useUser = () => {
-  return useSelector((state) => ({
+  return useSelector((state: any) => ({
     character: state.character,
     error: state.error,
     isFetchedOnServer: state.isFetchedOnServer,
-  }))
-}
+  }));
+};
 
 const UserInfo = () => {
-  const { character, isFetchedOnServer, error } = useUser()
-  const { name, id, username, email, phone, website } = character
+  const { character, isFetchedOnServer, error } = useUser();
+  const { name, id, username, email, phone, website } = character;
 
   return (
     <div className="UserInfo">
@@ -44,7 +44,7 @@ const UserInfo = () => {
         }
       `}</style>
     </div>
-  )
-}
+  );
+};
 
-export default UserInfo
+export default UserInfo;

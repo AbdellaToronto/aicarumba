@@ -1,10 +1,10 @@
-import { interval, of } from 'rxjs'
-import { takeUntil, mergeMap, catchError, map } from 'rxjs/operators'
-import { combineEpics, ofType } from 'redux-observable'
-import { request } from 'universal-rxjs-ajax' // because standard AjaxObservable only works in browser
+import { interval, of } from "rxjs";
+import { takeUntil, mergeMap, catchError, map } from "rxjs/operators";
+import { combineEpics, ofType } from "redux-observable";
+import { request } from "universal-rxjs-ajax"; // because standard AjaxObservable only works in browser
 
-import * as actions from './actions'
-import * as types from './actionTypes'
+import * as actions from "./actions";
+import * as types from "./actionTypes";
 
 export const fetchUsersEpic = (action$, state$) =>
   action$.pipe(
@@ -13,16 +13,18 @@ export const fetchUsersEpic = (action$, state$) =>
       return interval(5000).pipe(
         map((x) => actions.fetchUser()),
         takeUntil(
-          action$.ofType(types.STOP_FETCHING_USERS, types.FETCH_USER_FAILURE)
+          action$.pipe(
+            ofType(types.STOP_FETCHING_USERS, types.FETCH_USER_FAILURE)
+          )
         )
-      )
+      );
     })
-  )
+  );
 
 export const fetchUserEpic = (action$, state$) =>
   action$.pipe(
     ofType(types.FETCH_USER),
-    mergeMap((action) =>
+    mergeMap((action: any) =>
       request({
         url: `https://jsonplaceholder.typicode.com/users/${state$.value.nextUserId}`,
       }).pipe(
@@ -39,6 +41,6 @@ export const fetchUserEpic = (action$, state$) =>
         )
       )
     )
-  )
+  );
 
-export const rootEpic = combineEpics(fetchUsersEpic, fetchUserEpic)
+export const rootEpic = combineEpics(fetchUsersEpic, fetchUserEpic);

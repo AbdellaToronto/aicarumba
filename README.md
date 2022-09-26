@@ -28,12 +28,12 @@ generalise to resolving more complicated sets of actions.
 
 The layout of the redux related functionality is split between:
 
-    - actions (in `redux/actions.js`)
-    - actionTypes (in `redux/actionTypes.js`)
-    - epics (in `redux/epics.js`)
+    - actions (in `redux/actions.ts`)
+    - actionTypes (in `redux/actionTypes.ts`)
+    - epics (in `redux/epics.ts`)
     - reducer (in `redux/reducer.js`)
 
-and organized in `redux/index.js`.
+and organized in `redux/index.tsx`.
 
 Excepting in those manners discussed above, the configuration is similar the
 configuration found in [with-redux example](https://github.com/vercel/next.js/tree/canary/examples/with-redux)
