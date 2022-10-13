@@ -17,7 +17,7 @@ const INITIAL_STATE = {
   isFetchedOnServer: false,
   error: null,
   listOfSubTopics: [],
-  urlForImage: "",
+  response: {},
 };
 
 function reducer(state = INITIAL_STATE, { type, payload }) {
@@ -40,7 +40,7 @@ function reducer(state = INITIAL_STATE, { type, payload }) {
     case generateImageActionSuccess.type:
       return {
         ...state,
-        urlForImage: payload,
+        response: payload,
       };
 
     case types.FETCH_USER_FAILURE:

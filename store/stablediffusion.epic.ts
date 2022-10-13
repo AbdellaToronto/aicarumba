@@ -1,4 +1,4 @@
-import { filter, map, mergeMap } from "rxjs/operators";
+import { catchError, filter, map, mergeMap } from "rxjs/operators";
 import { request } from "universal-rxjs-ajax";
 import { Observable, of } from "rxjs";
 import { Action } from "redux";
@@ -9,26 +9,23 @@ export const fetchStableDiffusionImage = (
 ): Observable<Action> =>
   action$.pipe(
     filter(generateImageAction.match),
-    // mergeMap((action) => {
-    //   return replicate.models
-    //     .get("stability-ai/stable-diffusion")
-    //     .then((model) => {
-    //       return model.predict({
-    //         prompt: action.payload,
-    //       });
-    //     });
-    // }),
     mergeMap((action) =>
       request({
         method: "POST",
-        url: "/.netlify/functions/stablediffusion",
+        url: "/stablediffusion",
         body: {
           prompt: action.payload,
         },
       })
     ),
-    map((response: any) => {
-      debugger;
-      return generateImageActionSuccess(response.response);
+    map(({ response }: any) => {
+      if (response) {
+        return generateImageActionSuccess(response);
+      } else {
+        throw new Error("No response from server");
+      }
+    }),
+    catchError((e) => {
+      return of({ type: "GenerationError", payload: e });
     })
   );

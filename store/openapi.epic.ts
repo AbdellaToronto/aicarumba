@@ -15,7 +15,13 @@ const configuration = new Configuration({
 const openai = new OpenAIApi(configuration);
 
 const createSublistPrompt = (genre) =>
-  `Below is a comma separated list of themes associated with "${genre.trim()}", for use in trivia/pictionary-like games`;
+  `
+  An example of breaking a genre into subgenres into a comma separated list would be something like
+  
+  genre "Animals":
+  Lion, Bear, Moose, Eagle, Turtle, Blue Whale, Giraffe, Dragonfly
+  
+  Below is a comma separated list of subgenres associated with the genre "${genre.trim()}", for use in trivia/pictionary-like games:`;
 
 export const fetchListOfSubTopics = (action$: Observable<Action>) =>
   action$.pipe(
@@ -30,8 +36,13 @@ export const fetchListOfSubTopics = (action$: Observable<Action>) =>
       });
     }),
     map((response) => {
-      const responseToArray = response.data.choices[0].text.trim().split(",");
-      return fetchListOfSubTopicsSuccessAction(responseToArray);
+      const responseToArray = response.data.choices[0].text
+        .replace(":", "")
+        .trim()
+        .split(",");
+      return fetchListOfSubTopicsSuccessAction(
+        Array.from(new Set(responseToArray))
+      );
     })
   );
 

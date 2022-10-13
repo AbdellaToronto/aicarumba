@@ -13,6 +13,10 @@ const StyledContainer = styled(Container)`
 const AICarumba = () => {
   const dispatch = useDispatch();
 
+  const generatedImageUrl = useSelector((state: any) => {
+    return state.response?.output?.[0];
+  });
+
   // get rid of any eventually, lazy ow
   const { subtopics } = useSelector((state: any) => ({
     subtopics: state.listOfSubTopics || [],
@@ -37,6 +41,7 @@ const AICarumba = () => {
           }
         />
       </StyledContainer>
+      {generatedImageUrl && <img src={generatedImageUrl} alt="" />}
     </Box>
   );
 };

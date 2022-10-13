@@ -3,11 +3,14 @@
   "scripts": {
     "dev": "next",
     "build": "next build",
-    "start": "next start"
+    "start": "next start",
+    "deploy:function:sd": "gcloud functions deploy stablediffusion \\\n--gen2 \\\n--region=us-east4 \\\n--runtime=nodejs16 \\\n--entry-point=stablediffusion \\\n--trigger-http"
   },
   "dependencies": {
     "@emotion/react": "^11.10.4",
     "@emotion/styled": "^11.10.4",
+    "@google-cloud/functions-framework": "^3.1.2",
+    "@google-cloud/storage": "^6.5.2",
     "@mui/icons-material": "^5.10.6",
     "@mui/material": "^5.10.6",
     "@netlify/functions": "^1.2.0",
