@@ -1,13 +1,21 @@
 import { useDispatch, useSelector } from "react-redux";
-import { fetchListOfSubTopicsAction } from "../store/actions";
+import {
+  fetchListOfSubTopicsAction,
+  generateImageFromPromptsAction,
+  setNumberOfCategories,
+} from "../store/actions";
 import { HeaderComponent } from "../components/header.component";
 import { css, Global } from "@emotion/react";
 import { TextPromptCard } from "../components/textPromptCard.component";
-import { Box, Container } from "@mui/material";
+import { Box, Container, TextField } from "@mui/material";
 import styled from "@emotion/styled";
+import * as React from "react";
 
 const StyledContainer = styled(Container)`
   margin-top: 20px;
+  display: flex;
+  gap: 20px;
+  flex-wrap: wrap;
 `;
 
 const AICarumba = () => {
@@ -17,10 +25,12 @@ const AICarumba = () => {
     return state.response?.output?.[0];
   });
 
+  const numberOfCategories = useSelector((state: any) => {
+    return state.numberOfCategories;
+  });
+
   // get rid of any eventually, lazy ow
-  const { subtopics } = useSelector((state: any) => ({
-    subtopics: state.listOfSubTopics || [],
-  }));
+  const subtopics = useSelector((state: any) => state.listsOfSubTopics || {});
 
   return (
     <Box>
@@ -31,17 +41,32 @@ const AICarumba = () => {
           }
         `}
       />
-      <HeaderComponent />
+      <HeaderComponent
+        onGenerate={() => dispatch(generateImageFromPromptsAction(subtopics))}
+      />
+      <TextField
+        label="Number Of Categories"
+        variant="standard"
+        type="number"
+        value={numberOfCategories}
+        onChange={(event) =>
+          dispatch(setNumberOfCategories(parseInt(event.target.value, 10)))
+        }
+      />
       <StyledContainer maxWidth="lg">
-        <TextPromptCard
-          bottomBarIsOpen={subtopics.length > 0}
-          subTopics={subtopics}
-          handleSearchClick={(text) =>
-            dispatch(fetchListOfSubTopicsAction(text))
-          }
-        />
+        {generatedImageUrl && <img src={generatedImageUrl} alt="" />}
+
+        {Array.from({ length: numberOfCategories }).map((_, index) => (
+          <TextPromptCard
+            key={index + "category"}
+            bottomBarIsOpen={false}
+            subTopics={subtopics[index] || []}
+            handleSearchClick={(prompt) =>
+              dispatch(fetchListOfSubTopicsAction({ prompt, index }))
+            }
+          />
+        ))}
       </StyledContainer>
-      {generatedImageUrl && <img src={generatedImageUrl} alt="" />}
     </Box>
   );
 };

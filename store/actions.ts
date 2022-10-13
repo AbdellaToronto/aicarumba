@@ -22,12 +22,23 @@ export const fetchUserFailure = (error, isServer) => ({
 });
 
 // OpenAPI actions
-export const fetchListOfSubTopicsAction = createAction<string>(
-  "openapi/fetchListOfSubTopics"
+export const fetchListOfSubTopicsAction = createAction<{
+  prompt: string;
+  index: number;
+}>("openapi/fetchListOfSubTopics");
+
+export const fetchListOfSubTopicsSuccessAction = createAction<{
+  subtopics: string[];
+  categoryNumber: number;
+}>("openapi/fetchListOfSubTopicsSuccess");
+
+export const setNumberOfCategories = createAction<number>(
+  "internal/setNumberOfCategories"
 );
-export const fetchListOfSubTopicsSuccessAction = createAction<string[]>(
-  "openapi/fetchListOfSubTopicsSuccess"
-);
+
+export const generateImageFromPromptsAction = createAction<{
+  [catNumber: number]: string[];
+}>("sd/generateImageFromPrompts");
 
 // Stable Diffusion API actions
 export const generateImageAction = createAction<string>("sd/generateImage");

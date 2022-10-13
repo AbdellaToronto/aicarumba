@@ -7,47 +7,40 @@ import * as types from "./actionTypes";
 import {
   fetchListOfSubTopicsSuccessAction,
   generateImageActionSuccess,
+  setNumberOfCategories,
 } from "./actions";
 
 let store;
 
 const INITIAL_STATE = {
-  nextUserId: 1,
+  numberOfCategories: 1,
   character: {},
   isFetchedOnServer: false,
   error: null,
-  listOfSubTopics: [],
+  listsOfSubTopics: {},
   response: {},
 };
 
 function reducer(state = INITIAL_STATE, { type, payload }) {
   switch (type) {
-    case types.FETCH_USER_SUCCESS:
+    case setNumberOfCategories.type:
       return {
         ...state,
-        character: payload.response,
-        isFetchedOnServer: payload.isServer,
-        nextUserId: state.nextUserId + 1,
+        numberOfCategories: payload,
       };
-
-    // temporary place for state
     case fetchListOfSubTopicsSuccessAction.type:
       return {
         ...state,
-        listOfSubTopics: payload,
+        listsOfSubTopics: {
+          ...state.listsOfSubTopics,
+          [payload.categoryNumber]: payload.subtopics,
+        },
       };
 
     case generateImageActionSuccess.type:
       return {
         ...state,
         response: payload,
-      };
-
-    case types.FETCH_USER_FAILURE:
-      return {
-        ...state,
-        error: payload.error,
-        isFetchedOnServer: payload.isServer,
       };
     default:
       return state;
