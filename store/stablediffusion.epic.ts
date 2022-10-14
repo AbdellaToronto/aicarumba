@@ -12,7 +12,7 @@ export const fetchStableDiffusionImage = (
     mergeMap((action) =>
       request({
         method: "POST",
-        url: "/stablediffusion",
+        url: "/sd",
         body: {
           prompt: action.payload,
         },
