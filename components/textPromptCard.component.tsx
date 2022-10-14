@@ -45,15 +45,8 @@ export const TextPromptCard: React.FC<{
 
   return (
     <Card sx={{ maxWidth: 345 }}>
-      <CardHeader
-        title="Test Prompt Card"
-        subheader="Put in a topic and should get a result as a list of AI generated subtopics"
-      />
+      <CardHeader title="Put In A Topic" />
       <CardContent>
-        <Typography variant="body2" color="text.secondary">
-          The goal with this is to test the process of dynamically generated
-          topic generation!
-        </Typography>
         <TextField
           id="standard-basic"
           label="General Topic"

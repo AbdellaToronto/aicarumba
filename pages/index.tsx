@@ -22,6 +22,7 @@ const StyledContainer = styled(Container)`
 
 // mobile only version of component above
 const StyledContainerMobile = styled(StyledContainer)`
+  flex-grow: 1;
   @media (min-width: 600px) {
     display: none;
   }
@@ -46,6 +47,9 @@ const StyledGeneratedImage = styled.img`
 // carousel is only visible when on mobile, and will center its contents
 const StyledCarousel = styled(Carousel)`
   display: none;
+  & > div {
+    height: 100% !important;
+  }
   @media (max-width: 600px) {
     display: block;
     width: 100%;
