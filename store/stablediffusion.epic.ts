@@ -4,12 +4,6 @@ import { Observable, of } from "rxjs";
 import { Action } from "redux";
 import { generateImageActionSuccess, generateImageAction } from "./actions";
 
-// if in prod, use https://stablediffusion-3kkdwicjvq-uc.a.run.app as url, otherwise /stablediffusion
-const url =
-  process.env.NODE_ENV === "production"
-    ? "https://stablediffusion-3kkdwicjvq-uc.a.run.app"
-    : "/stablediffusion";
-
 export const fetchStableDiffusionImage = (
   action$: Observable<Action>
 ): Observable<Action> =>
@@ -18,7 +12,7 @@ export const fetchStableDiffusionImage = (
     mergeMap((action) =>
       request({
         method: "POST",
-        url,
+        url: "/stablediffusion",
         body: {
           prompt: action.payload,
         },
