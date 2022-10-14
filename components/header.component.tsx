@@ -115,7 +115,7 @@ export const HeaderComponent = ({ onGenerate = () => {} }) => {
   );
 
   return (
-    <Box sx={{ flexGrow: 1 }}>
+    <>
       <AppBar position="static">
         <Toolbar>
           <IconButton
@@ -134,6 +134,6 @@ export const HeaderComponent = ({ onGenerate = () => {} }) => {
       </AppBar>
       {renderMobileMenu}
       {renderMenu}
-    </Box>
+    </>
   );
 };
