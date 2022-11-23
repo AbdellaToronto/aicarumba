@@ -1,8 +1,9 @@
 import { Configuration, OpenAIApi } from "openai";
-import { filter, map, mergeMap } from "rxjs/operators";
-import { from, Observable } from "rxjs";
+import { catchError, filter, map, mergeMap } from "rxjs/operators";
+import { from, Observable, of } from "rxjs";
 import {
   fetchListOfSubTopicsAction,
+  fetchListOfSubTopicsFailure,
   fetchListOfSubTopicsSuccessAction,
   generateImageAction,
   generateImageFromPromptsAction,
@@ -15,14 +16,23 @@ const configuration = new Configuration({
 
 const openai = new OpenAIApi(configuration);
 
+const openAPIModels = {
+  code: "code-davinci-002",
+  text: "text-davinci-002",
+};
+
 const createSublistPrompt = (genre) =>
   `
-  An example of breaking a genre into subgenres into a comma separated list would be something like
+  // An example of an array of 7 subtopics
   
-  genre "Animals":
-  Lion, Bear, Moose, Eagle, Turtle, Blue Whale, Giraffe, Dragonfly
+  // animals
+  let subtopics = ["Lion", "Tiger", "Bear", "Swan", "Eagle", "Beetle", "Swordfish"];
   
-  Below is a comma separated list of subgenres associated with the genre "${genre.trim()}", for use in trivia/pictionary-like games:`;
+  // dragons
+  let subtopics = ["Smaug", "Dragonite", "Toothless", "Tiamat", "Nidhoggr", "Falkor", "Spyro"];
+  
+  // ${genre.trim()}
+  let subtopics = `;
 
 export const fetchListOfSubTopics = (action$: Observable<Action>) =>
   action$.pipe(
@@ -30,20 +40,31 @@ export const fetchListOfSubTopics = (action$: Observable<Action>) =>
     mergeMap((action) => {
       return from(
         openai.createCompletion({
-          model: "text-davinci-002",
+          model: openAPIModels.code,
           prompt: createSublistPrompt(action.payload.prompt),
           temperature: 0.7,
           max_tokens: 256,
           presence_penalty: 0.5,
+          // stop sequence at the end of the first array's semicolon
+          stop: ";",
         })
       ).pipe(
         map((response) => {
-          const responseToArray = response.data.choices[0].text
-            .replace(":", "")
-            .trim()
-            .split(",");
+          try {
+            return eval(response.data.choices[0].text);
+          } catch (e) {
+            throw new Error(`Error parsing response: ${e.message}`);
+          }
+        }),
+        catchError((error) =>
+          of(
+            fetchListOfSubTopicsFailure({ error, index: action.payload.index })
+          )
+        ),
+        map((subtopics) => {
           return fetchListOfSubTopicsSuccessAction({
-            subtopics: Array.from(new Set(responseToArray)),
+            // subtopics deduped
+            subtopics: Array.from(new Set(subtopics)),
             categoryNumber: action.payload.index,
           });
         })
@@ -65,8 +86,6 @@ export const generateImageOnPrompt = (action$: Observable<Action>) =>
         (subArr: string[]) => subArr[Math.floor(Math.random() * subArr.length)]
       );
 
-      const prompt = randomizedPrompts.join(" ");
-
-      return generateImageAction(prompt);
+      return generateImageAction(randomizedPrompts);
     })
   );
