@@ -3,11 +3,14 @@ import { createStore, applyMiddleware } from "redux";
 import { createLogger } from "redux-logger";
 import { createEpicMiddleware } from "redux-observable";
 import { rootEpic } from "./epics";
-import * as types from "./actionTypes";
 import {
+  fetchListOfSubTopicsAction,
+  fetchListOfSubTopicsFailure,
   fetchListOfSubTopicsSuccessAction,
   generateImageActionSuccess,
   setNumberOfCategories,
+  updateCategoryListQuery,
+  userGuess,
 } from "./actions";
 
 let store;
@@ -19,7 +22,16 @@ const INITIAL_STATE = {
   error: null,
   listsOfSubTopics: {},
   response: {},
+  categoryData: {},
+  userGuesses: {},
 };
+
+export enum CategoryState {
+  LOADING = "loading",
+  LOADED = "loaded",
+  ERROR = "error",
+  DEFAULT = "default",
+}
 
 function reducer(state = INITIAL_STATE, { type, payload }) {
   switch (type) {
@@ -35,12 +47,59 @@ function reducer(state = INITIAL_STATE, { type, payload }) {
           ...state.listsOfSubTopics,
           [payload.categoryNumber]: payload.subtopics,
         },
+        categoryData: {
+          ...state.categoryData,
+          [payload.categoryNumber]: {
+            ...state.categoryData[payload.categoryNumber],
+            state: CategoryState.LOADED,
+          },
+        },
       };
-
     case generateImageActionSuccess.type:
       return {
         ...state,
         response: payload,
+      };
+    case updateCategoryListQuery.type:
+      return {
+        ...state,
+        categoryData: {
+          ...state.categoryData,
+          [payload.categoryNumber]: {
+            query: payload.subtopic,
+            state: CategoryState.DEFAULT,
+          },
+        },
+      };
+    case fetchListOfSubTopicsAction.type:
+      return {
+        ...state,
+        categoryData: {
+          ...state.categoryData,
+          [payload.index]: {
+            ...state.categoryData[payload.index],
+            state: CategoryState.LOADING,
+          },
+        },
+      };
+    case fetchListOfSubTopicsFailure.type:
+      return {
+        ...state,
+        categoryData: {
+          ...state.categoryData,
+          [payload.index]: {
+            ...state.categoryData[payload.categoryNumber],
+            state: CategoryState.ERROR,
+          },
+        },
+      };
+    case userGuess.type:
+      return {
+        ...state,
+        userGuesses: {
+          ...state.userGuesses,
+          [payload.categoryNumber]: payload.subtopic,
+        },
       };
     default:
       return state;

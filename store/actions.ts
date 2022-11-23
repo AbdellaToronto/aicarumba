@@ -32,6 +32,11 @@ export const fetchListOfSubTopicsSuccessAction = createAction<{
   categoryNumber: number;
 }>("openapi/fetchListOfSubTopicsSuccess");
 
+export const fetchListOfSubTopicsFailure = createAction<{
+  error: string;
+  index: number;
+}>("openapi/fetchListOfSubTopicsFailure");
+
 export const setNumberOfCategories = createAction<number>(
   "internal/setNumberOfCategories"
 );
@@ -41,7 +46,17 @@ export const generateImageFromPromptsAction = createAction<{
 }>("sd/generateImageFromPrompts");
 
 // Stable Diffusion API actions
-export const generateImageAction = createAction<string>("sd/generateImage");
-export const generateImageActionSuccess = createAction<string>(
+export const generateImageAction = createAction<string[]>("sd/generateImage");
+export const generateImageActionSuccess = createAction<any>(
   "sd/generatedImageSuccess"
 );
+
+export const updateCategoryListQuery = createAction<{
+  categoryNumber: number;
+  subtopic: string;
+}>("sd/updateCategoryListQuery");
+
+export const userGuess = createAction<{
+  categoryNumber: number;
+  subtopic: string;
+}>("sd/onUserGuess");

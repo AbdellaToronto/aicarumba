@@ -20,17 +20,21 @@ export const fetchStableDiffusionImage = (
         method: "POST",
         url,
         body: {
-          prompt: action.payload,
+          prompt: action.payload.join(", "),
         },
-      })
+      }).pipe(
+        map(({ response }: any) => {
+          if (response) {
+            return generateImageActionSuccess({
+              ...response,
+              prompts: action.payload,
+            });
+          } else {
+            throw new Error("No response from server");
+          }
+        })
+      )
     ),
-    map(({ response }: any) => {
-      if (response) {
-        return generateImageActionSuccess(response);
-      } else {
-        throw new Error("No response from server");
-      }
-    }),
     catchError((e) => {
       return of({ type: "GenerationError", payload: e });
     })
